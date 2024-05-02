@@ -157,6 +157,12 @@ class Network:
                     self.nodes[neighbour_index].connections[index] = 1
 
     def make_ring_network(self, N, neighbour_range=2):
+        """
+         This function creates a ring network of nodes and connections between neighbours.
+         Arguments:
+         N (int): The number of nodes in the network.
+         neighbour_range (int): The range of neighbours each node connects to (default is 2).
+        """
         self.nodes = []  # Clear any existing nodes.
         for i in range(N):
             connections = []
@@ -167,6 +173,12 @@ class Network:
             self.nodes.append(Node(value=i, number=i, connections=connections))  # Add the node with connections.
 
     def make_small_world_network(self, N, re_wire_prob=0.2):
+        """
+        This function creates a small-world network from a ring network by re-wiring edges according to a set probability.
+        Arguments:
+        N (int): The number of nodes in the network.
+        re_wire_prob (float): The rewiring probability (default is 0.2).
+        """
         self.make_ring_network(N)
         # Iterate through each node to consider rewiring its connections
         for node in self.nodes:
@@ -215,14 +227,6 @@ class Network:
                 neighbour_y = network_radius * np.sin(neighbour_angle)
 
                 ax.plot((node_x, neighbour_x), (node_y, neighbour_y), color='black')
-
-        # Add title indicating network type and rewiring probability (if applicable)
-        if network_type:
-            if re_wire_prob is not None:
-                title = network_type + " Network (Re-wiring Probability = " + str(re_wire_prob) + ")"
-            else:
-                title = network_type + " Network (Range 2)"
-            plt.title(title)
 
         plt.show()
 
