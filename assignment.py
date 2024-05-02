@@ -476,21 +476,44 @@ This section contains code for the Defuant Model - task 2 in the assignment
 ==============================================================================================================
 '''
 
+DEFUANT_NUM_ROUNDS = 100
+DEFUANT_NUM_SIMS_PER_ROUND = 1000
+
 
 def initialize_population(population_size):
+    """
+    This function is used to initialize the random population with given population size.
+    The opinion values in population will follow uniform distribution ranging from 0 to 1.
+    Arguments:
+    population_size (int)： size of population
+    Returns:
+    1-D Numpy array with size of population_size
+    """
     return np.random.uniform(0, 1, population_size)
 
 
 def defuant_main(beta, threshold, population_size=100):
+    """
+    This function will run the opinion propagation simulation with Defuant model in a
+    randomly generated population, with given coupling parameter and threshold
+    Arguments:
+    beta (float)：coupling parameter of the Defuant model
+    threshold (float)：opinion difference threshold for update to happen
+    population_size (int)：size of population intended for simulation
+    Returns:
+    The function has no returns.
+    The function will generate and store one image reflecting the population opinion distribution
+    along the simulations.
+    """
     # Initialize population
     population = initialize_population(population_size)
     # Initialize the population dot history and store the first data
     opinion_dots = [population.copy()]
     iterations = [0]
     # Do iteration of 100 rounds to update the population
-    for i in range(100):
+    for i in range(DEFUANT_NUM_ROUNDS):
         # Do update 1000 times within one round
-        for _ in range(1000):
+        for _ in range(DEFUANT_NUM_SIMS_PER_ROUND):
             # Get random people in population
             my_id = np.random.randint(0, population_size)
             # Get random neighbor
@@ -528,6 +551,15 @@ def defuant_main(beta, threshold, population_size=100):
 
 
 def test_defuant():
+    """
+    This function executes the tests for Defuant model with following use cases:
+        - beta = 0.5, threshold = 0.5 ： Strong coupling, large threshold
+        - beta = 0.5, threshold = 0.1 ： Strong coupling, small threshold
+        - beta = 0.1, threshold = 0.5 ： Weak coupling, large threshold
+        - beta = 0.1, threshold = 0.2 ： Weak coupling, small threshold
+        - beta = 0, threshold = 1.0 ： Edge case with zero coupling, population should not change at all
+        - beta = 0.5, threshold = 0.0 ： Edge case with zero threshold, population should not change at all
+    """
     defuant_main(beta=0.5, threshold=0.5)
     defuant_main(beta=0.5, threshold=0.1)
     defuant_main(beta=0.1, threshold=0.5)
